@@ -1,2 +1,8 @@
 
 .DS_Store
+MI_GO.egg-info/dependency_links.txt
+MI_GO.egg-info/PKG-INFO
+MI_GO.egg-info/SOURCES.txt
+MI_GO.egg-info/top_level.txt
+*.pyc
+*.egg
