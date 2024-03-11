@@ -1,6 +1,27 @@
+import pandas as pd
+
+from goatools.anno.idtogos_reader import IdToGosReader
 from goatools.base import get_godag
 from goatools.gosubdag.gosubdag import GoSubDag
-from goatools.anno.idtogos_reader import IdToGosReader
+from goatools.semantic import get_info_content, TermCounts
+
+
+
+def convert_counts_stats_to_data_frame(dag_stats, counts):
+    data_dict = {"NS": [], "GO_ID": [], "dcnt": [], "Depth": []}
+    for species in counts:
+        data_dict[species] = []
+    data_dict["Name"] = []
+    for values in dag_stats:
+            data_dict["NS"].append(values.NS)
+            data_dict["GO_ID"].append(values.GO)
+            data_dict["dcnt"].append(values.dcnt)
+            data_dict["Depth"].append(values.depth)
+            for species, count in counts.items():
+                data_dict[species].append(get_info_content(values.GO, count))
+            data_dict["Name"].append(values.GO_name)
+    dataframe = pd.DataFrame.from_dict(data_dict)
+    return dataframe
 
 
 def read_godag(obo_fpath):
@@ -27,9 +48,21 @@ def get_godag_subset(ids, godag):
 
 
 def get_annotations(godag, datasets={}):
-    #return {species : get_objanno(fpath, anno_type="gene2go", godag=godag, taxid=False) for species, fpath in datasets.items()}
     return {species : IdToGosReader(fpath, godag=godag, taxid=False) for species, fpath in datasets.items()}
 
 
-def calculate_information_content(godag, datasets={}, format="gene2go"):
-    pass
+def get_terms_counts(godag, datasets={}):
+    return {species: TermCounts(godag, annot.get_id2gos_nss()) for species, annot in datasets.items()}
+
+
+def get_subdag(go_list, godag):
+    return GoSubDag(go_list, godag)
+
+
+def get_subdag_statistics(subdag, go_terms, sort_by_depth=True):
+    stats = [subdag.go2nt[go] for go in go_terms]
+    if sort_by_depth:
+        return sorted(stats, key=lambda nt: nt.depth)
+    else:
+        return stats
+
