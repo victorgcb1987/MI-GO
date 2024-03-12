@@ -1,5 +1,7 @@
 import pandas as pd
 
+from math import log as ln
+
 from goatools.anno.idtogos_reader import IdToGosReader
 from goatools.base import get_godag
 from goatools.gosubdag.gosubdag import GoSubDag
@@ -7,10 +9,14 @@ from goatools.semantic import get_info_content, TermCounts
 
 
 
-def convert_counts_stats_to_data_frame(dag_stats, counts):
+def convert_counts_stats_to_data_frame(dag_stats, counts, gene_counts):
     data_dict = {"NS": [], "GO_ID": [], "dcnt": [], "Depth": []}
     for species in counts:
-        data_dict[species] = []
+        column_name = "{}_IC".format(species)
+        data_dict[column_name] = []
+    for species in counts:
+        column_name = "{}_GeneCount".format(species)
+        data_dict[column_name] = []
     data_dict["Name"] = []
     for values in dag_stats:
             data_dict["NS"].append(values.NS)
@@ -18,11 +24,38 @@ def convert_counts_stats_to_data_frame(dag_stats, counts):
             data_dict["dcnt"].append(values.dcnt)
             data_dict["Depth"].append(values.depth)
             for species, count in counts.items():
-                data_dict[species].append(get_info_content(values.GO, count))
+                column_name = "{}_IC".format(species)
+                data_dict[column_name].append(get_info_content(values.GO, count))
+            for species, count in counts.items():
+                column_name = "{}_GeneCount".format(species)
+                data_dict[column_name].append(gene_counts[species].get(values.GO, 0))
             data_dict["Name"].append(values.GO_name)
     dataframe = pd.DataFrame.from_dict(data_dict)
     return dataframe
 
+def group_genes_by_GO(data_sets):
+    go_groups = {species:{} for species in data_sets}
+    for species, dataset in data_sets.items():
+        with open(dataset) as fhand:
+            for line in fhand:
+                line = line.rstrip().split()
+                gene = line[0]
+                go_terms = line[1].split(";")
+                for go_term in go_terms:
+                    if go_term not in go_groups[species]:
+                        go_groups[species][go_term] = [gene]
+                    else:
+                        go_groups[species][go_term].append(gene)
+    return(go_groups)
+
+
+def count_genes_by_go(grouped_genes):
+    go_counts = {species: {} for species in grouped_genes}
+    for species, go_terms in grouped_genes.items():
+        for goterm, genes in go_terms.items():
+            go_counts[species][goterm] = len(genes)
+    return go_counts
+                    
 
 def read_godag(obo_fpath):
     godag = get_godag(obo_fpath)
@@ -66,3 +99,30 @@ def get_subdag_statistics(subdag, go_terms, sort_by_depth=True):
     else:
         return stats
 
+
+def calculate_go_terms_IC_diversity(dataframe):
+    diversity = {"Diversity_IC": []}
+    col_names = [colname for colname in dataframe.columns if "_IC" in colname]
+    for index in dataframe.index:
+        raw_values = [dataframe[col_name][index] for col_name in col_names]
+        N = sum(raw_values)
+        values = [(float(raw_value)/N) * ln(float(raw_value)/N) if raw_value > 0 else 0 for raw_value in raw_values]
+        diversity_value =  -sum(value for value in values if value is not 0)
+        diversity["Diversity_IC"].append(diversity_value)
+    dataframe.insert(dataframe.columns.get_loc(col_names[-1])+1, 
+                     "Diversity_IC", diversity["Diversity_IC"])
+    return dataframe
+
+
+def calculate_go_terms_geneCount_diversity(dataframe):
+    diversity = {"_GeneCount": []}
+    col_names = [colname for colname in dataframe.columns if "_GeneCount" in colname]
+    for index in dataframe.index:
+        raw_values = [dataframe[col_name][index] for col_name in col_names]
+        N = sum(raw_values)
+        values = [(float(raw_value)/N) * ln(float(raw_value)/N) if raw_value > 0 else 0 for raw_value in raw_values]
+        diversity_value =  -sum(value for value in values if value is not 0)
+        diversity["_GeneCount"].append(diversity_value)
+    dataframe.insert(dataframe.columns.get_loc(col_names[-1])+1, 
+                     "Diversity_GeneCount", diversity["_GeneCount"])
+    return dataframe

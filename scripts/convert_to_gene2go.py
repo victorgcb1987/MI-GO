@@ -15,7 +15,7 @@ def main():
                 go_term = line[4]
                 if gene_name not in records:
                     records[gene_name] = [go_term]
-                else:
+                elif go_term not in records[gene_name]:
                     records[gene_name].append(go_term)
     with open(output_fname, "w") as output_fhand:
         for gene, goterms in records.items():
