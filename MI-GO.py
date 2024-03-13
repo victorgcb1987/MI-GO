@@ -4,7 +4,9 @@ from pathlib import Path
 import pandas as pd
 
 from src.godag import (calculate_go_terms_IC_diversity,
+                       calculate_go_terms_IC_specifity,
                        calculate_go_terms_geneCount_diversity,
+                       calculate_go_terms_geneCount_specifity,
                        calculate_sum_IC,
                        convert_counts_stats_to_data_frame,
                        count_genes_by_go,
@@ -64,12 +66,14 @@ def main():
     gosubdag = get_subdag([goid for goid in godag], godag)
     sorted_nts = get_subdag_statistics(gosubdag, [go for go in godag], sort_by_depth=True)
     dataframe = convert_counts_stats_to_data_frame(sorted_nts, counts, gene_counts)
-    calculate_go_terms_IC_diversity(dataframe)        
+    calculate_go_terms_IC_diversity(dataframe)
+    calculate_go_terms_IC_specifity(dataframe)
     calculate_go_terms_geneCount_diversity(dataframe)
+    calculate_go_terms_geneCount_specifity(dataframe)
     sum_data = calculate_sum_IC(dataframe, annotations)
     write_sum_IC_tables(sum_data, arguments["output"])
     data_frame_fpath = arguments["output"] / "Diversity_IC_table.tsv"
     dataframe.to_csv(data_frame_fpath, sep="\t", index=False)
-    print("XXX")
+
 if __name__ == "__main__":
     main()

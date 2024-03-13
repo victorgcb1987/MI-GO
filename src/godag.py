@@ -1,6 +1,7 @@
 import pandas as pd
 
 from math import log as ln
+from math import     log2 as log
 
 from goatools.anno.idtogos_reader import IdToGosReader
 from goatools.base import get_godag
@@ -107,24 +108,55 @@ def calculate_go_terms_IC_diversity(dataframe):
         raw_values = [dataframe[col_name][index] for col_name in col_names]
         N = sum(raw_values)
         values = [(float(raw_value)/N) * ln(float(raw_value)/N) if raw_value > 0 else 0 for raw_value in raw_values]
-        diversity_value =  -sum(value for value in values if value is not 0)
+        diversity_value =  -sum(value for value in values if value != 0)
         diversity["Diversity_IC"].append(diversity_value)
     dataframe.insert(dataframe.columns.get_loc(col_names[-1])+1, 
                      "Diversity_IC", diversity["Diversity_IC"])
     return dataframe
 
+def calculate_go_terms_IC_specifity(dataframe):
+    specifity = {"Specifity_IC": []}
+    col_names = [colname for colname in dataframe.columns if "_IC" in colname and "Diversity" not in colname]
+    for index in dataframe.index:
+        raw_values = [dataframe[col_name][index] for col_name in col_names]
+        N = sum(raw_values)
+        pijs = [float(raw_value/N) if N > 0 else 0 for raw_value in raw_values ]
+        pi = float((1/len(raw_values))) * sum(pijs)
+        values = [(pij/pi) * log(pij/pi) if pi > 0 and pij > 0 else 0 for pij in pijs]
+        si = (1/len(raw_values)) * sum(values)
+        specifity["Specifity_IC"].append(si)
+    dataframe.insert(dataframe.columns.get_loc("Diversity_IC")+1, 
+                     "Specifity_IC", specifity["Specifity_IC"])
+    return dataframe
+
 
 def calculate_go_terms_geneCount_diversity(dataframe):
     diversity = {"_GeneCount": []}
-    col_names = [colname for colname in dataframe.columns if "_GeneCount" in colname]
+    col_names = [colname for colname in dataframe.columns if "_GeneCount" in colname and "Diversity" not in colname]
     for index in dataframe.index:
         raw_values = [dataframe[col_name][index] for col_name in col_names]
         N = sum(raw_values)
         values = [(float(raw_value)/N) * ln(float(raw_value)/N) if raw_value > 0 else 0 for raw_value in raw_values]
-        diversity_value =  -sum(value for value in values if value is not 0)
+        diversity_value =  -sum(value for value in values if value != 0)
         diversity["_GeneCount"].append(diversity_value)
     dataframe.insert(dataframe.columns.get_loc(col_names[-1])+1, 
                      "Diversity_GeneCount", diversity["_GeneCount"])
+    return dataframe
+
+
+def calculate_go_terms_geneCount_specifity(dataframe):
+    specifity = {"Specifity_GeneCount": []}
+    col_names = [colname for colname in dataframe.columns if "GeneCount" in colname]
+    for index in dataframe.index:
+        raw_values = [dataframe[col_name][index] for col_name in col_names]
+        N = sum(raw_values)
+        pijs = [abs(float(raw_value/N)) if N > 0 else 0 for raw_value in raw_values]
+        pi = float((1/len(raw_values))) * sum(pijs)
+        values = [(pij/pi) * log(pij/pi) if pi > 0 and pij > 0 else 0 for pij in pijs]
+        si = (1/len(raw_values)) * sum(values)
+        specifity["Specifity_GeneCount"].append(si)
+    dataframe.insert(dataframe.columns.get_loc("Diversity_GeneCount")+1, 
+                     "Specifity_GeneCount", specifity["Specifity_GeneCount"])
     return dataframe
 
 
@@ -150,3 +182,4 @@ def write_sum_IC_tables(sums_IC, out_fpath):
         species_out_fpath = out_fpath / "{}_SUM_IC.tsv".format(species)
         df = pd.DataFrame.from_dict(sum_IC)
         df.to_csv(species_out_fpath, sep="\t", index=False)
+
