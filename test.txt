@@ -1,3 +1,0 @@
-human   /Users/victorburgos/trabajo/develops/MI-GO/tests/test_data/human.top5.gene2go
-mouse   /Users/victorburgos/trabajo/develops/MI-GO/tests/test_data/mouse.top5.gene2go
-fly     /Users/victorburgos/trabajo/develops/MI-GO/tests/test_data/fly.top5.gene2go
