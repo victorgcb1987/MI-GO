@@ -103,7 +103,7 @@ def get_subdag_statistics(subdag, go_terms, sort_by_depth=True):
 
 def calculate_go_terms_IC_diversity(dataframe):
     diversity = {"Diversity_IC": []}
-    col_names = [colname for colname in dataframe.columns if "_IC" in colname]
+    col_names = [colname for colname in dataframe.columns if "_IC" in colname and "Specifity" not in colname]
     for index in dataframe.index:
         raw_values = [dataframe[col_name][index] for col_name in col_names]
         N = sum(raw_values)
@@ -132,7 +132,7 @@ def calculate_go_terms_IC_specifity(dataframe):
 
 def calculate_go_terms_geneCount_diversity(dataframe):
     diversity = {"_GeneCount": []}
-    col_names = [colname for colname in dataframe.columns if "_GeneCount" in colname and "Diversity" not in colname]
+    col_names = [colname for colname in dataframe.columns if "_GeneCount" in colname and "Specifity" not in colname]
     for index in dataframe.index:
         raw_values = [dataframe[col_name][index] for col_name in col_names]
         N = sum(raw_values)
@@ -146,7 +146,7 @@ def calculate_go_terms_geneCount_diversity(dataframe):
 
 def calculate_go_terms_geneCount_specifity(dataframe):
     specifity = {"Specifity_GeneCount": []}
-    col_names = [colname for colname in dataframe.columns if "GeneCount" in colname]
+    col_names = [colname for colname in dataframe.columns if "GeneCount" in colname and "Diversity" not in colname]
     for index in dataframe.index:
         raw_values = [dataframe[col_name][index] for col_name in col_names]
         N = sum(raw_values)
