@@ -8,7 +8,6 @@ from goatools.gosubdag.gosubdag import GoSubDag
 from goatools.semantic import get_info_content, TermCounts
 
 
-
 def convert_counts_stats_to_data_frame(dag_stats, counts, gene_counts):
     data_dict = {"NS": [], "GO_ID": [], "dcnt": [], "Depth": []}
     for species in counts:
@@ -33,6 +32,7 @@ def convert_counts_stats_to_data_frame(dag_stats, counts, gene_counts):
     dataframe = pd.DataFrame.from_dict(data_dict)
     return dataframe
 
+
 def group_genes_by_GO(data_sets):
     go_groups = {species:{} for species in data_sets}
     for species, dataset in data_sets.items():
@@ -46,7 +46,7 @@ def group_genes_by_GO(data_sets):
                         go_groups[species][go_term] = [gene]
                     else:
                         go_groups[species][go_term].append(gene)
-    return(go_groups)
+    return go_groups
 
 
 def count_genes_by_go(grouped_genes):
@@ -126,3 +126,28 @@ def calculate_go_terms_geneCount_diversity(dataframe):
     dataframe.insert(dataframe.columns.get_loc(col_names[-1])+1, 
                      "Diversity_GeneCount", diversity["_GeneCount"])
     return dataframe
+
+
+def calculate_sum_IC(dataframe, annotations):
+    sum_data = {species: {"gene": [], "Sum_IC":[]} for species in annotations}
+    for species, annotation in annotations.items():
+        print(species)
+        for gene, goset in annotation.id2gos.items():
+            species_ic_label = "{}_IC".format(species)
+            sub_df = dataframe.get(["GO_ID", species_ic_label])
+            sub_df = dict(zip(sub_df["GO_ID"], sub_df[species_ic_label]))
+            if len(goset) == 0:
+                sum_data[species]["gene"].append(gene)
+                sum_data[species]["Sum_IC"].append(0)
+            else:
+                ic_sum = sum([sub_df[go_term] for go_term in goset])
+                sum_data[species]["gene"].append(gene)
+                sum_data[species]["Sum_IC"].append(ic_sum)
+    return sum_data
+
+
+def write_sum_IC_tables(sums_IC, out_fpath):
+    for species, sum_IC in sums_IC.items():
+        species_out_fpath = out_fpath / "{}_SUM_IC.tsv".format(species)
+        df = pd.DataFrame.from_dict(sum_IC)
+        df.to_csv(species_out_fpath, sep="\t", index=False)
