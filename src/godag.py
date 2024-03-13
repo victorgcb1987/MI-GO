@@ -131,7 +131,6 @@ def calculate_go_terms_geneCount_diversity(dataframe):
 def calculate_sum_IC(dataframe, annotations):
     sum_data = {species: {"gene": [], "Sum_IC":[]} for species in annotations}
     for species, annotation in annotations.items():
-        print(species)
         for gene, goset in annotation.id2gos.items():
             species_ic_label = "{}_IC".format(species)
             sub_df = dataframe.get(["GO_ID", species_ic_label])
