@@ -16,6 +16,7 @@ from src.godag import (calculate_go_terms_IC_diversity,
                        get_terms_counts,
                        group_genes_by_GO,
                        read_godag,
+                       remove_obsolete_terms,
                        write_sum_IC_tables)
 
 def parse_arguments():
@@ -32,11 +33,17 @@ def parse_arguments():
                         "-b", type=str,
                         help=help_obo_fpath,
                         required=True)
+    help_obsolete = "(Optional) Remove obsolete terms. Default=False"
+    parser.add_argument("--obsolete", 
+                        "-r", action="store_true",
+                        help=help_obsolete,
+                        default=False) 
     help_output_fpath = "(Required) Output Dir"
     parser.add_argument("--output", 
                         "-o", type=str,
                         help=help_output_fpath,
                         required=True) 
+    
     return parser
 
 
@@ -54,13 +61,12 @@ def get_arguments():
     obo = Path(options.obo)
     return {"datasets": datasets,
             "obo": obo,
-            "output": out_path} 
+            "output": out_path,
+            "remove_obsolete": options.obsolete} 
      
 def main():
     arguments = get_arguments()
     godag = read_godag(arguments["obo"])
-    for species, file in arguments["datasets"].items():
-        print(species, file)
     gene_groups = group_genes_by_GO(arguments["datasets"])
     gene_counts = count_genes_by_go(gene_groups)
     annotations = get_annotations(godag, arguments["datasets"])
@@ -68,11 +74,13 @@ def main():
     gosubdag = get_subdag([goid for goid in godag], godag)
     sorted_nts = get_subdag_statistics(gosubdag, [go for go in godag], sort_by_depth=True)
     dataframe = convert_counts_stats_to_data_frame(sorted_nts, counts, gene_counts)
+    if arguments["remove_obsolete"]:
+        dataframe = remove_obsolete_terms(dataframe)
     calculate_go_terms_IC_diversity(dataframe)
     calculate_go_terms_IC_specifity(dataframe)
     calculate_go_terms_geneCount_diversity(dataframe)
     calculate_go_terms_geneCount_specifity(dataframe)
-    sum_data = calculate_sum_IC(dataframe, annotations)
+    sum_data = calculate_sum_IC(dataframe, annotations, remove_obsolete=arguments["remove_obsolete"])
     write_sum_IC_tables(sum_data, arguments["output"])
     data_frame_fpath = arguments["output"] / "Diversity_IC_table.tsv"
     dataframe.to_csv(data_frame_fpath, sep="\t", index=False)

@@ -162,7 +162,8 @@ def calculate_go_terms_geneCount_specifity(dataframe):
     return dataframe
 
 
-def calculate_sum_IC(dataframe, annotations):
+
+def calculate_sum_IC(dataframe, annotations, remove_obsolete=False):
     sum_data = {species: {"gene": [], "Sum_IC":[]} for species in annotations}
     for species, annotation in annotations.items():
         for gene, goset in annotation.id2gos.items():
@@ -173,10 +174,20 @@ def calculate_sum_IC(dataframe, annotations):
                 sum_data[species]["gene"].append(gene)
                 sum_data[species]["Sum_IC"].append(0)
             else:
-                ic_sum = sum([sub_df[go_term] for go_term in goset])
+                if remove_obsolete:
+                    values = []
+                    for go_term in goset:
+                        try:
+                            values.append(sub_df[go_term])
+                        except:
+                            continue
+                    ic_sum = sum(values)
+                else:
+                    ic_sum = sum([sub_df[go_term] for go_term in goset])
                 sum_data[species]["gene"].append(gene)
                 sum_data[species]["Sum_IC"].append(ic_sum)
     return sum_data
+
 
 
 def write_sum_IC_tables(sums_IC, out_fpath):
@@ -185,3 +196,6 @@ def write_sum_IC_tables(sums_IC, out_fpath):
         df = pd.DataFrame.from_dict(sum_IC)
         df.to_csv(species_out_fpath, sep="\t", index=False)
 
+def remove_obsolete_terms(dataframe):
+    dataframe = dataframe.loc[~dataframe['Name'].str.contains("obsolete")]
+    return dataframe
