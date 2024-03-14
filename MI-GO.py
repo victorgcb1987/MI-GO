@@ -34,7 +34,7 @@ def parse_arguments():
                         help=help_obo_fpath,
                         required=True)
     help_obsolete = "(Optional) Remove obsolete terms. Default=False"
-    parser.add_argument("--obsolete", 
+    parser.add_argument("--remove_obsolete", 
                         "-r", action="store_true",
                         help=help_obsolete,
                         default=False) 
@@ -62,7 +62,7 @@ def get_arguments():
     return {"datasets": datasets,
             "obo": obo,
             "output": out_path,
-            "remove_obsolete": options.obsolete} 
+            "remove_obsolete": options.remove_obsolete} 
      
 def main():
     arguments = get_arguments()
