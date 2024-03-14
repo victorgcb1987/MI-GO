@@ -59,6 +59,8 @@ def get_arguments():
 def main():
     arguments = get_arguments()
     godag = read_godag(arguments["obo"])
+    for species, file in arguments["datasets"].items():
+        print(species, file)
     gene_groups = group_genes_by_GO(arguments["datasets"])
     gene_counts = count_genes_by_go(gene_groups)
     annotations = get_annotations(godag, arguments["datasets"])

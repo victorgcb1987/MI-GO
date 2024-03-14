@@ -6,7 +6,9 @@ from math import     log2 as log
 from goatools.anno.idtogos_reader import IdToGosReader
 from goatools.base import get_godag
 from goatools.gosubdag.gosubdag import GoSubDag
+from goatools.obo_parser import GODag
 from goatools.semantic import get_info_content, TermCounts
+
 
 
 def convert_counts_stats_to_data_frame(dag_stats, counts, gene_counts):
@@ -59,7 +61,7 @@ def count_genes_by_go(grouped_genes):
                     
 
 def read_godag(obo_fpath):
-    godag = get_godag(obo_fpath)
+    godag = GODag(obo_fpath, optional_attrs={'consider', 'replaced_by'}, load_obsolete=True)
     return godag
 
 
@@ -82,7 +84,7 @@ def get_godag_subset(ids, godag):
 
 
 def get_annotations(godag, datasets={}):
-    return {species : IdToGosReader(fpath, godag=godag, taxid=False) for species, fpath in datasets.items()}
+    return {species : IdToGosReader(fpath, godag=godag, obsolete="replace") for species, fpath in datasets.items()}
 
 
 def get_terms_counts(godag, datasets={}):
