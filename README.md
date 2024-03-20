@@ -2,6 +2,10 @@
 
 ## Introduction
 
-MI-GO is a tool oriented to retrieve known GO-TERMS from gene2ids annotation files and then perform calculations like Information content (IC) or Shannon Diversity Index.
+MI-GO is a tool oriented to retrieve known GO-TERMS from gene2ids annotation files and then perform calculations like Information content (IC) or Shannon Diversity Index accross multiple datasets, which is useful for comparing GO-TERMs annotations across species and/or annotations and select genes and GO-TERMs based on if they are informative or not.
 
-## Installation
+## Installation 
+
+First, get MI-GO repository:
+
+  git clone https://github.com/victorgcb1987/Mi-GO.git
