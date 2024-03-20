@@ -42,6 +42,19 @@ The following arguments are mandatory: -i/--input is the path to tab-delimited f
 After running the program, results should be stored in the {outp_dir} defined in the command line. If {output_dir} doesn't exist, the directory is created. Inside two types of files can be found:
 
 * Diversity_IC_table.tsv: a tab-delimited file containing results for all species. It should look like this:
-    NS	GO_ID	dcnt	Depth	Athaliana_167_IC	Vvinifera_457_IC	Zmays_833_IC	Diversity_IC	Specifity_IC	Athaliana_167_GeneCount	Vvinifera_457_GeneCount	Zmays_833_GeneCount	Diversity_GeneCount	Specifity_GeneCount	Name
-  
-Afewwwwd
+
+| NS | GO_ID      | dcnt | Depth | SP1_IC           | SP2_IC           | SP3_IC           | Diversity_IC     | Specifity_IC        | SP1_GeneCount | SP2_GeneCount | SP3_GeneCount | Diversity_GeneCount | Specifity_GeneCount | Name                         |
+|----|------------|------|-------|------------------|------------------|------------------|------------------|---------------------|---------------|---------------|---------------|---------------------|---------------------|-----------------------------|
+| BP | GO:0000003 | 31   | 1     | 5.613 | 6.184  | 5.774 | 1.097 | 0.001 | 21            | 19            | 31            | 1.074    | 0.034  | reproduction                |
+| BP | GO:0002376 | 566  | 1     | 3.902 | 3.627 | 3.566   | 1.097 | 0.001 | 7             | 5             | 4             | 1.071    | 0.038  | immune system process       |
+| MF | GO:0003774 | 9    | 1     | 5.483 | 5.563 | 4.307 | 1.092 | 0.009 | 0             | 1             | 1             | 0.693   | 0.584   | cytoskeletal motor activity |
+
+NS indicates is GO Term is a Biological process (BP), Molecular Function (MF) or Cellular Component (CC). ICs are the Information content for each GO Term and species. Next two columns are for Shannon Diversity Index and specifity for ICs pertaining to this GO Term and species. The same is for the following columns, but instead of using IC uses the number of Genes in the annotation with this GO term assigned. Last column, Name, is the description of the GO Term.
+
+* {Species}_SUM_IC.tsv: It's a tab-delimited file for each species. For each gene, it contains the IC sum of all GOI terms that are annotated for that gene. It should look like this:
+
+| gene  | Sum_IC             |
+|-------|--------------------|
+| Gene1 | 37.982  |
+| Gene2 | 22.270 |
+| Gene2 | 36.629  |
