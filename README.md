@@ -29,8 +29,10 @@ Each dataset file should have the following format:
     AT3G48680.1|PACid:19658684	GO:0010228;GO:0000325;GO:0009853;GO:0005515;GO:0009651;GO:0031966;GO:0046872;GO:0005747;GO:0005739;GO:0005829;GO:0009737
     AT1G14260.1|PACid:19654319	GO:0016021;GO:0000325;GO:0016740;GO:0046872;GO:0016567;GO:0016020
 
+Also, a GO ontology file is needed, for example the go-basic.obo file found in https://geneontology.org/docs/download-ontology/
+
 You can run MI-GO like this:
 
     python MI-GO.py -i {ListGOFiles.txt} -b {go-basic.obo.txt} -r -o {output_dir}
 
-The following arguments are mandatory: -i/--input is the path to tab-delimited file with the list of filepaths to each dataset. -b/--obo is the filepath to the obo format file containing the description and status of each GO Term and -o/--output is directory path where all the results are going to be stored. -r/--remove obsolete is an optional argument which will remove from final results each GO Term obosolete by obo file's standard. 
+The following arguments are mandatory: -i/--input is the path to tab-delimited file with the list of filepaths to each dataset. -b/--obo is the filepath is to the GO ontology in .obo format file containing the description and status of each GO Term and -o/--output is directory path where all the results are going to be stored. -r/--remove obsolete is an optional argument which will remove from final results each GO Term obosolete by obo file's standard. 
