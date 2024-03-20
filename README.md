@@ -8,4 +8,4 @@ MI-GO is a tool oriented to retrieve known GO-TERMS from gene2ids annotation fil
 
 First, get MI-GO repository:
 
-  git clone https://github.com/victorgcb1987/Mi-GO.git
+    git clone https://github.com/victorgcb1987/Mi-GO.git
