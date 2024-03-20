@@ -36,3 +36,12 @@ You can run MI-GO like this:
     python MI-GO.py -i {ListGOFiles.txt} -b {go-basic.obo.txt} -r -o {output_dir}
 
 The following arguments are mandatory: -i/--input is the path to tab-delimited file with the list of filepaths to each dataset. -b/--obo is the filepath is to the GO ontology in .obo format file containing the description and status of each GO Term and -o/--output is directory path where all the results are going to be stored. -r/--remove obsolete is an optional argument which will remove from final results each GO Term obosolete by obo file's standard. 
+
+## Output
+
+After running the program, results should be stored in the {outp_dir} defined in the command line. If {output_dir} doesn't exist, the directory is created. Inside two types of files can be found:
+
+* Diversity_IC_table.tsv: a tab-delimited file containing results for all species. It should look like this:
+    NS	GO_ID	dcnt	Depth	Athaliana_167_IC	Vvinifera_457_IC	Zmays_833_IC	Diversity_IC	Specifity_IC	Athaliana_167_GeneCount	Vvinifera_457_GeneCount	Zmays_833_GeneCount	Diversity_GeneCount	Specifity_GeneCount	Name
+  
+Afewwwwd
