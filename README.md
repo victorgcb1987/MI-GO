@@ -15,3 +15,9 @@ Then install the python requirements. A python venv is strongly advised.
 
     pip install -r requirements.txt
     python setup.py install
+
+## Usage
+
+A TAB-file with dataset's name and file path is needed in order to run the program. This file should be something like this:
+        annot1    /path/to/annot1.txt
+        annot2    /path/to/annot2.txt
