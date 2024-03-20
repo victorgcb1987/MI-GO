@@ -22,3 +22,9 @@ A TAB-file with dataset's name and file path is needed in order to run the progr
     
     annot1    /path/to/annot1.txt
     annot2    /path/to/annot2.txt
+
+Each dataset file should have the following format:
+
+    AT1G12200.1|PACid:19651062	GO:0000325;GO:0050661;GO:0050660;GO:0050832;GO:0004499
+    AT3G48680.1|PACid:19658684	GO:0010228;GO:0000325;GO:0009853;GO:0005515;GO:0009651;GO:0031966;GO:0046872;GO:0005747;GO:0005739;GO:0005829;GO:0009737
+AT1G14260.1|PACid:19654319	GO:0016021;GO:0000325;GO:0016740;GO:0046872;GO:0016567;GO:0016020
