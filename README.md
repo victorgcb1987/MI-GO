@@ -31,6 +31,6 @@ Each dataset file should have the following format:
 
 You can run MI-GO like this:
 
-    python MI-GO.py -i {00_ListGOFiles.txt} -b {go-basic.obo.txt} -r -o {output_dir}
+    python MI-GO.py -i {ListGOFiles.txt} -b {go-basic.obo.txt} -r -o {output_dir}
 
 The following arguments are mandatory: -i/--input is the path to tab-delimited file with the list of filepaths to each dataset. -b/--obo is the filepath to the obo format file containing the description and status of each GO Term and -o/--output is directory path where all the results are going to be stored. -r/--remove obsolete is an optional argument which will remove from final results each GO Term obosolete by obo file's standard. 
