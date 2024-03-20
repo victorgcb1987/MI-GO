@@ -19,6 +19,7 @@ from src.godag import (calculate_go_terms_IC_diversity,
                        remove_obsolete_terms,
                        write_sum_IC_tables)
 
+
 def parse_arguments():
     desc = "MI-GO: tool for calculate IC content and Diversity for GO TERMS"
     parser = ArgumentParser(description=desc)
